@@ -1,6 +1,6 @@
 # Android Device Flash Script
 
-An automated batch script for flashing Android devices with KSuNext packages (or any fastboot-compatible zip packages).
+An automated script for flashing Android devices with KSuNext packages (or any fastboot-compatible zip packages).
 
 ## Features
 
@@ -35,25 +35,57 @@ An automated batch script for flashing Android devices with KSuNext packages (or
 
 ## Installation
 
-1. Download the script file: `flash_android.bat`
+### Windows
+1. Download the script file: `Waffle-KSU-N-Update.bat`
 2. Place it in your `platform-tools` directory
 3. Place your zip packages in the same directory
 4. Run as Administrator (recommended)
 
+### Linux/macOS
+1. Download and extract: `Waffle-KSU-N-Update-Linux-macOS.tar.gz`
+2. Install platform tools:
+   - **Linux (Ubuntu/Debian)**: `sudo apt install android-tools-adb android-tools-fastboot`
+   - **Linux (Fedora)**: `sudo dnf install android-tools`
+   - **Linux (Arch)**: `sudo pacman -S android-tools`
+   - **macOS (Homebrew)**: `brew install android-platform-tools`
+   - **macOS (MacPorts)**: `sudo port install android-platform-tools`
+3. Place your zip packages in the same directory
+
 ## Usage
 
 ### Quick Start
-```bash
+
+**Windows:**
+```cmd
 # Just run the script - it handles everything automatically
-flash_android.bat
+Waffle-KSU-N-Update.bat
+```
+
+**Linux/macOS:**
+```bash
+# Extract the archive
+tar -xzf Waffle-KSU-N-Update-Linux-macOS.tar.gz
+
+# Run the script - no chmod needed!
+./Waffle-KSU-N-Update.sh
 ```
 
 ### File Structure
+
+**Windows:**
 ```
 platform-tools/
 ├── adb.exe
 ├── fastboot.exe
-├── flash_android.bat          # This script
+├── Waffle-KSU-N-Update.bat          # This script
+├── 092325-waffle-KSuNext-KPkg.zip
+└── 092625-waffle-KSuNext-KPkg.zip  # ← Will auto-select this (latest)
+```
+
+**Linux/macOS:**
+```
+project-folder/
+├── Waffle-KSU-N-Update.sh           # This script
 ├── 092325-waffle-KSuNext-KPkg.zip
 └── 092625-waffle-KSuNext-KPkg.zip  # ← Will auto-select this (latest)
 ```
@@ -70,7 +102,7 @@ platform-tools/
 
 ```
 ==========================================
-   Android Device Flash Script
+   Waffle KSU-N Package Flash Script
 ==========================================
 
 Looking for flash packages...
@@ -105,13 +137,14 @@ Flash completed successfully!
 ## Supported Platforms
 
 - ✅ **Windows**: Batch file (`.bat`)
-- 🔄 **Linux/macOS**: Bash script version available (`.sh`)
+- ✅ **Linux**: Bash script (`.sh`)
+- ✅ **macOS**: Bash script (`.sh`)
 
 ## Error Handling
 
 The script handles common issues automatically:
 
-- **Missing Tools**: Checks for ADB/Fastboot availability
+- **Missing Tools**: Checks for ADB/Fastboot availability with platform-specific installation guidance
 - **No Device**: Clear troubleshooting steps and retry options  
 - **Wrong Mode**: Automatically handles device state transitions
 - **No Package**: Validates zip files exist before starting
@@ -128,10 +161,22 @@ The script handles common issues automatically:
 ## Troubleshooting
 
 ### Device Not Detected
-- Ensure USB debugging is enabled (for ADB mode)
+- **Linux/macOS**: Ensure your user is in the `plugdev` group or has proper USB permissions
+- **All platforms**: Ensure USB debugging is enabled (for ADB mode)
 - Check USB cable and drivers
 - Try different USB ports
 - Manually boot to bootloader and retry
+
+### Permission Issues (Linux/macOS)
+```bash
+# Add udev rules for Android devices (Linux)
+sudo wget -S -O - http://source.android.com/source/51-android.rules | sudo tee >/dev/null /etc/udev/rules.d/51-android.rules
+sudo udevadm control --reload-rules
+
+# Add user to plugdev group
+sudo usermod -a -G plugdev $USER
+# Log out and back in for changes to take effect
+```
 
 ### Script Hangs
 - The script includes 5-second timeouts to prevent hanging
