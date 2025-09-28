@@ -105,7 +105,7 @@ Flash completed successfully!
 ## Supported Platforms
 
 - ✅ **Windows**: Batch file (`.bat`)
-- 🔄 **Linux**: Bash script version available (`.sh`)
+- 🔄 **Linux/macOS**: Bash script version available (`.sh`)
 
 ## Error Handling
 
